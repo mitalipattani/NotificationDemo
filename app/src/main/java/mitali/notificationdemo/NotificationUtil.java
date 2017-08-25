@@ -4,6 +4,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +50,16 @@ public class NotificationUtil {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
     }
+    //  Create a helper method called largeIcon which takes in a Context as a parameter and
+    // returns a Bitmap. This method is necessary to decode a bitmap needed for the notification.
+    private static Bitmap largeIcon(Context context) {
+        //  Get a Resources object from the context.
+        Resources res = context.getResources();
+        //  Create and return a bitmap using BitmapFactory.decodeResource, passing in the
+        // resources object and R.drawable.ic_local_drink_black_24px
+        Bitmap largeIcon = BitmapFactory.decodeResource(res, R.mipmap.ic_drink);
+        return largeIcon;
+    }
     //lets start building the notification
     public static void reminderUser(Context context)
     {
@@ -63,7 +76,8 @@ public class NotificationUtil {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setSmallIcon(R.drawable.ic_drink_notification)
+                .setSmallIcon(R.mipmap.ic_drink)
+                .setLargeIcon(largeIcon(context))
                 .setContentTitle(context.getString(R.string.title))
                 .setContentText(context.getString(R.string.content))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(
