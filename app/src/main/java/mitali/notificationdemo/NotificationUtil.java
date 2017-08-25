@@ -11,6 +11,9 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.app.Notification;
+import android.util.Log;
+import android.widget.Toast;
+
 /**
  * Created by CICCC-CIRAC on 2017-08-25.
  */
@@ -23,6 +26,10 @@ public class NotificationUtil {
     //number is arbitary and can be set to anything.
     private static final int REMINDER_NOTIFICATION_ID = 1138;
     private static final int REMINDER_PENDING_INTENT_ID = 3417;
+    //
+    private static final int ACTION_DRINK_PENDING_INTENT_ID = 1;
+    private static final int ACTION_IGNORE_PENDING_INTENT_ID = 14;
+
     //helper methods called contentIntent with a single parameter
     //context. It should return a pending intent.This method
     // will crearte a pending intent which trigger when
@@ -84,6 +91,8 @@ public class NotificationUtil {
                     context.getString(R.string.content)))
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent(context))
+                .addAction(drinkWaterAction(context))
+                 .addAction(ignoreReminderAction(context))
                 .setAutoCancel(true);
         //If build version is greater than JELLY BEAN
         //than set priority
@@ -103,4 +112,59 @@ public class NotificationUtil {
         notificationManager.notify(REMINDER_NOTIFICATION_ID,
                 notificationBuilder.build());
     }
+    //add a static method to drink
+    private static NotificationCompat.Action drinkWaterAction(Context context)
+    {
+        //create a intent to launch the reminder
+        Intent drinkWaterintent = new Intent(context, HandleIntent.class);
+
+        //set action of intent
+        drinkWaterintent.setAction(HandleAction.ACTION_DRINK_WATER);
+        //create a pending intent to launch the intentService
+        PendingIntent drinkWaterPI = PendingIntent.getService(
+                context,
+                ACTION_DRINK_PENDING_INTENT_ID,
+                drinkWaterintent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+        );
+        //create an action for user to notify
+        NotificationCompat.Action drinkwaterAction =
+                new NotificationCompat.Action(R.mipmap.ic_drink,"DRINK IT",
+                        drinkWaterPI);
+        //return the action
+        return drinkwaterAction;
+    }
+
+    private static NotificationCompat.Action ignoreReminderAction(Context context)
+    {
+        //create a intent to launch the reminder
+        Intent ignoreWaterintent = new Intent(context, HandleIntent.class);
+
+        //set action of intent
+       ignoreWaterintent.setAction(HandleAction.ACTION_IGNORE);
+        //create a pending intent to launch the intentService
+        PendingIntent ignoreWaterPI = PendingIntent.getService(
+                context,
+                ACTION_IGNORE_PENDING_INTENT_ID,
+                ignoreWaterintent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+        );
+        //create an action for user to notify
+        NotificationCompat.Action ignorewaterAction =
+                new NotificationCompat.Action(R.mipmap.ic_drink,"DISMISS",
+                        ignoreWaterPI);
+        //return the action
+        return ignorewaterAction;
+    }
+
+    public static void clearAllNotifications(Context context)
+    {
+        NotificationManager notificationManager =
+                (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
+
+
 }
