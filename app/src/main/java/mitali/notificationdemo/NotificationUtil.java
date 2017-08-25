@@ -33,7 +33,7 @@ public class NotificationUtil {
     {
         //create an intent that opens MainActivity
         Intent startActivityIntent = new
-                Intent(context,Notification.class);
+                Intent(context, mitali.notificationdemo.Notification.class);
         //Create a pending intent using
         //getactivity that will:
         //take the context passed as paraameter
